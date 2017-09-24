@@ -6,40 +6,39 @@
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Beatbox</title>
 </head>
-
 <style>
     button {
         padding: 5px;
-        background: rgb(200, 200, 200);
-        border: 3px solid rgb(122, 122, 122);
-        border-radius: 20px;
+        border-radius: 60px;
         outline: none;
         width: 120px;
         height: 120px;
-        font-size: 15px
+        font-size: 15px;
+        background: rgb(200, 200, 200);
+        border: 5px solid rgb(122, 122, 122);
     }
 
     button.active, button:active {
+        padding: 5px;
+        outline: none;
+        width: 120px;
+        height: 120px;
+        font-size: 15px;
         background: rgb(100, 100, 100);
-        border: 3px solid rgb(0, 0, 0);
-        box-shadow: 0 0 2px 0 rgb(0, 0, 0);
+        border: 5px solid rgb(0, 0, 0);
     }
 
-    div#kick {
-        width: 130px;
-        height: 600px;
-        float: left;
+    button.tick {
+        border: 5px solid darkgrey;
     }
 
-    #snare {
-        width: 130px;
-        height: 600px;
-        float: left;
+    button.tock {
+        border: 5px solid black;
     }
 
-    #hihat {
-        width: 130px;
-        height: 600px;
+    div#kick, #snare, #hihat, #beat, #audio {
+        width: 150px;
+        height: 300px;
         float: left;
     }
 
@@ -47,98 +46,59 @@
         width: 120px;
         height: 10px;
     }
-
 </style>
 
 <body>
-
 <h1> Homework#1: Beatbox </h1>
 <br>
 
 <div id="kick" align="center">
-    <button id="kickPad" onmousedown="playDrum(0)"> Kick ('a' key)</button>
+    <button id="kickPad" class="drum" onmousedown="playDrum(0)"> Kick ('a' key)</button>
     <p id="kickVolLabel"></p>
     <input class="volume" oninput="changeGain(0,this.value)" id="kickVol" title="Kick volume" type="range" min="-24"
            max="0" value="-12">
 </div>
 <div id="snare" align="center">
-    <button id="snarePad" onmousedown="playDrum(1)"> Snare ('s' key)</button>
+    <button id="snarePad" class="drum" onmousedown="playDrum(1)"> Snare ('s' key)</button>
     <p id="snareVolLabel"></p>
     <input class="volume" oninput="changeGain(1,this.value)" id="snareVol" title="Snare volume" type="range" min="-24"
            max="0" value="-12">
 </div>
 <div id="hihat" align="center">
-    <button id="hihatPad" onmousedown="playDrum(2)"> Hihat ('l' key)</button>
+    <button id="hihatPad" class="drum" onmousedown="playDrum(2)"> Hihat ('l' key)</button>
     <p id="hihatVolLabel"></p>
     <input class="volume" oninput="changeGain(2,this.value)" id="hihatVol" title="Hihat volume" type="range" min="-24"
            max="0" value="-12">
 </div>
-
-
 <div id="beat" align="center">
-    <button id="beatPad" onmousedown="startMetronome(110)"> Beat ('b' key)</button>
+    <button id="beatPad" class="metronome" onmousedown="setMetronome()"> Metronome ('b' key)</button>
     <p id="beatVolLabel"></p>
-    <input class="volume" oninput="changeBPM(3,this.value)" id="beatVol" title="beat bpm" type="range" min="20"
-           max="200" value="-12">
+    <input class="volume" oninput="changeGain(3,this.value)" id="beatVol" title="Beat volume" type="range" min="-24"
+           max="0" value="-12">
+    BPM: <input id="bpmInput" name="bpm" oninput="changeBPM(this.value)" id="beatBPM" title="beat BPM" type="number"
+                min="20" max="200" value="110">
 </div>
-
-
+<div id="audio" align="center">
+    <button id="audioPad" onmousedown="setAudio()"> Audio ('r')</button>
+    <p id="audioVolLabel"></p>
+    <input class="volume" oninput="changeGain(4,this.value)" id="audioVol" title="Audio volume" type="range" min="-24"
+           max="0" value="-12">
+    <input id="fileChooseInput" type="file">
+    <!--<button onclick="stopSound()">Stop</button>-->
+</div>
 <script>
     var context = new (window.AudioContext || window.webkitAudioContext)();
+    var buffers = new Array(5); // 0 : kick, 1 : snare, 2 : hihat, 3: metronome, 4: audio
+    var source = null;
 
-    var buffers = new Array(4); // 0 : kick, 1 : snare, 2 : hihat
-    var volume_id = new Array("kickVol", "snareVol", "hihatVol", "beatVol");
-    var volume_label_id = new Array("kickVolLabel", "snareVolLabel", "hihatVolLabel", "beatVolLabel");
-    var gain_nodes = new Array(4);
-
-    for (i = 0; i < buffers.length; i++) {
-        gain_nodes[i] = context.createGain();
-        var vol = document.getElementById(volume_id[i]).value;
-        gain_nodes[i].gain.value = db2gain(vol);
-        document.getElementById(volume_label_id[i]).innerHTML = 'Volume:  ' + vol + 'dB';
-    }
-
-    var kick = new XMLHttpRequest();
-    kick.open("Get", "data/kick_safe2.wav", true);
-    kick.responseType = "arraybuffer";
-    kick.onload = function () {
-        context.decodeAudioData(kick.response, function (buffer) {
-            buffers[0] = buffer;
-        });
-    };
-    kick.send();
-
-    var snare = new XMLHttpRequest();
-    snare.open("Get", "data/snare_safe.wav", true);
-    snare.responseType = "arraybuffer";
-    snare.onload = function () {
-        context.decodeAudioData(snare.response, function (buffer) {
-            buffers[1] = buffer;
-        });
-    };
-    snare.send();
-
-    var hihat = new XMLHttpRequest();
-    hihat.open("Get", "data/hihat_safe.wav", true);
-    hihat.responseType = "arraybuffer";
-    hihat.onload = function () {
-        context.decodeAudioData(hihat.response, function (buffer) {
-            buffers[2] = buffer;
-        });
-    };
-    hihat.send();
-
-    var beat = new XMLHttpRequest();
-    beat.open("Get", "data/beat_0302.wav", true);
-    beat.responseType = "arraybuffer";
-    beat.onload = function () {
-        context.decodeAudioData(beat.response, function (buffer) {
-            buffers[3] = buffer;
-        });
-    };
-    beat.send();
+    var volume_id = new Array("kickVol", "snareVol", "hihatVol", "beatVol", "audioVol");
+    var volume_label_id = new Array("kickVolLabel", "snareVolLabel", "hihatVolLabel", "beatVolLabel", "audioVolLabel");
+    var gain_nodes = new Array(5);
 
     window.onload = function () {
+        var control = document.getElementById("fileChooseInput");
+        control.addEventListener("change", fileChanged, false);
+
         window.addEventListener('keydown', function (key) {
             keyboardDown(key);
         }, false);
@@ -148,6 +108,67 @@
         }, false);
     };
 
+    for (i = 0; i < buffers.length; i++) {
+        gain_nodes[i] = context.createGain();
+        var vol = document.getElementById(volume_id[i]).value;
+        gain_nodes[i].gain.value = db2gain(vol);
+        document.getElementById(volume_label_id[i]).innerHTML = 'Volume:  ' + vol + 'dB';
+    }
+
+    var kick = new XMLHttpRequest();
+    kick.open("Get", "asset/kick_safe2.wav", true);
+    kick.responseType = "arraybuffer";
+    kick.onload = function () {
+        context.decodeAudioData(kick.response, function (buffer) {
+            buffers[0] = buffer;
+        });
+    };
+    kick.send();
+
+    var snare = new XMLHttpRequest();
+    snare.open("Get", "asset/snare_safe.wav", true);
+    snare.responseType = "arraybuffer";
+    snare.onload = function () {
+        context.decodeAudioData(snare.response, function (buffer) {
+            buffers[1] = buffer;
+        });
+    };
+    snare.send();
+
+    var hihat = new XMLHttpRequest();
+    hihat.open("Get", "asset/hihat_safe.wav", true);
+    hihat.responseType = "arraybuffer";
+    hihat.onload = function () {
+        context.decodeAudioData(hihat.response, function (buffer) {
+            buffers[2] = buffer;
+        });
+    };
+    hihat.send();
+
+    var beat = new XMLHttpRequest();
+    beat.open("Get", "asset/beat_0302.wav", true);
+    beat.responseType = "arraybuffer";
+    beat.onload = function () {
+        context.decodeAudioData(beat.response, function (buffer) {
+            buffers[3] = buffer;
+        });
+    };
+    beat.send();
+
+    function fileChanged(e) {
+        var file = e.target.files[0];
+        var fileReader = new FileReader();
+        fileReader.onload = fileLoaded;
+        fileReader.readAsArrayBuffer(file);
+    }
+
+    function fileLoaded(e) {
+        context.decodeAudioData(e.target.result, function (buffer) {
+            buffers[buffers.length - 1] = buffer;
+        });
+        console.log("File has been loaded.")
+    }
+
     function playDrum(i) {
         var source = context.createBufferSource();
         source.buffer = buffers[i];
@@ -156,21 +177,17 @@
         source.start(0);
     }
 
-    var metronome;
+    var audioSource = null;
+    function playAudio() {
+        audioSource = context.createBufferSource();
+        audioSource.buffer = buffers[buffers.length - 1];
+        audioSource.connect(gain_nodes[buffers.length - 1]);
+        gain_nodes[buffers.length - 1].connect(context.destination);
+        audioSource.start(0);
+    }
 
-    function startMetronome(bpm) {
-        clearInterval(metronome);
-
-        metronome = setInterval(function () {
-            var hihatpad = document.getElementById("snarePad");
-            hihatpad.className = 'active';
-            simulateClick(hihatpad);
-            setTimeout(function () {
-                hihatpad.className = "";
-            }, 100)
-
-
-        }, 60000 / bpm);
+    function stopAudio() {
+        if (audioSource) audioSource.stop();
     }
 
     function changeGain(i, changedValue) {
@@ -178,12 +195,55 @@
         document.getElementById(volume_label_id[i]).innerHTML = 'Volume:  ' + changedValue + 'dB';
     }
 
-    function changeBPM(i, changedValue) {
-        startMetronome(changedValue);
-    }
 
     function db2gain(db) {
         return Math.pow(10, db / 20);
+    }
+
+    var metronome;
+    var metronomeOn = false;
+
+    function setMetronome() {
+        var beatPad = document.getElementById("beatPad");
+        var bpm = document.getElementById("bpmInput").value;
+
+        if (!metronomeOn) {
+            metronomeOn = true;
+            metronome = setInterval(function () {
+                playDrum(3);
+                beatPad.className = (beatPad.className == "active tick") ? "active tock" : "active tick";
+            }, 60000 / bpm);
+
+        } else {
+            metronomeOn = false;
+            clearInterval(metronome);
+            beatPad.className = "";
+        }
+    }
+
+    function changeBPM(bpm) {
+        clearInterval(metronome);
+        document.getElementById("beatPad").className = "";
+        metronomeOn = false;
+        setMetronome();
+    }
+
+    var audioOn = false;
+
+    function setAudio() {
+        var audioPad = document.getElementById("audioPad");
+
+        if (!buffers[buffers.length - 1]) return;
+
+        if (!audioOn) {
+            audioOn = true;
+            playAudio();
+            audioPad.className = "active";
+        } else {
+            audioOn = false;
+            stopAudio();
+            audioPad.className = "";
+        }
     }
 
 
@@ -205,6 +265,10 @@
                 hihatpad.className = 'active';
                 simulateClick(hihatpad);
                 break;
+            case 66: //'b'
+                setMetronome();
+                break;
+
         }
     }
 
@@ -234,6 +298,8 @@
         });
         element.dispatchEvent(event);
     }
+
+
 </script>
 </body>
 
