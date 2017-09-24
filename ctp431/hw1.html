@@ -1,6 +1,240 @@
+<!doctype html>
 <html>
-<head></head>
+
+<head>
+    <meta charset="utf-8" name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Beatbox</title>
+</head>
+
+<style>
+    button {
+        padding: 5px;
+        background: rgb(200, 200, 200);
+        border: 3px solid rgb(122, 122, 122);
+        border-radius: 20px;
+        outline: none;
+        width: 120px;
+        height: 120px;
+        font-size: 15px
+    }
+
+    button.active, button:active {
+        background: rgb(100, 100, 100);
+        border: 3px solid rgb(0, 0, 0);
+        box-shadow: 0 0 2px 0 rgb(0, 0, 0);
+    }
+
+    div#kick {
+        width: 130px;
+        height: 600px;
+        float: left;
+    }
+
+    #snare {
+        width: 130px;
+        height: 600px;
+        float: left;
+    }
+
+    #hihat {
+        width: 130px;
+        height: 600px;
+        float: left;
+    }
+
+    input.volume {
+        width: 120px;
+        height: 10px;
+    }
+
+</style>
+
 <body>
-	test
+
+<h1> Homework#1: Beatbox </h1>
+<br>
+
+<div id="kick" align="center">
+    <button id="kickPad" onmousedown="playDrum(0)"> Kick ('a' key)</button>
+    <p id="kickVolLabel"></p>
+    <input class="volume" oninput="changeGain(0,this.value)" id="kickVol" title="Kick volume" type="range" min="-24"
+           max="0" value="-12">
+</div>
+<div id="snare" align="center">
+    <button id="snarePad" onmousedown="playDrum(1)"> Snare ('s' key)</button>
+    <p id="snareVolLabel"></p>
+    <input class="volume" oninput="changeGain(1,this.value)" id="snareVol" title="Snare volume" type="range" min="-24"
+           max="0" value="-12">
+</div>
+<div id="hihat" align="center">
+    <button id="hihatPad" onmousedown="playDrum(2)"> Hihat ('l' key)</button>
+    <p id="hihatVolLabel"></p>
+    <input class="volume" oninput="changeGain(2,this.value)" id="hihatVol" title="Hihat volume" type="range" min="-24"
+           max="0" value="-12">
+</div>
+
+
+<div id="beat" align="center">
+    <button id="beatPad" onmousedown="startMetronome(110)"> Beat ('b' key)</button>
+    <p id="beatVolLabel"></p>
+    <input class="volume" oninput="changeBPM(3,this.value)" id="beatVol" title="beat bpm" type="range" min="20"
+           max="200" value="-12">
+</div>
+
+
+<script>
+    var context = new (window.AudioContext || window.webkitAudioContext)();
+
+    var buffers = new Array(4); // 0 : kick, 1 : snare, 2 : hihat
+    var volume_id = new Array("kickVol", "snareVol", "hihatVol", "beatVol");
+    var volume_label_id = new Array("kickVolLabel", "snareVolLabel", "hihatVolLabel", "beatVolLabel");
+    var gain_nodes = new Array(4);
+
+    for (i = 0; i < buffers.length; i++) {
+        gain_nodes[i] = context.createGain();
+        var vol = document.getElementById(volume_id[i]).value;
+        gain_nodes[i].gain.value = db2gain(vol);
+        document.getElementById(volume_label_id[i]).innerHTML = 'Volume:  ' + vol + 'dB';
+    }
+
+    var kick = new XMLHttpRequest();
+    kick.open("Get", "data/kick_safe2.wav", true);
+    kick.responseType = "arraybuffer";
+    kick.onload = function () {
+        context.decodeAudioData(kick.response, function (buffer) {
+            buffers[0] = buffer;
+        });
+    };
+    kick.send();
+
+    var snare = new XMLHttpRequest();
+    snare.open("Get", "data/snare_safe.wav", true);
+    snare.responseType = "arraybuffer";
+    snare.onload = function () {
+        context.decodeAudioData(snare.response, function (buffer) {
+            buffers[1] = buffer;
+        });
+    };
+    snare.send();
+
+    var hihat = new XMLHttpRequest();
+    hihat.open("Get", "data/hihat_safe.wav", true);
+    hihat.responseType = "arraybuffer";
+    hihat.onload = function () {
+        context.decodeAudioData(hihat.response, function (buffer) {
+            buffers[2] = buffer;
+        });
+    };
+    hihat.send();
+
+    var beat = new XMLHttpRequest();
+    beat.open("Get", "data/beat_0302.wav", true);
+    beat.responseType = "arraybuffer";
+    beat.onload = function () {
+        context.decodeAudioData(beat.response, function (buffer) {
+            buffers[3] = buffer;
+        });
+    };
+    beat.send();
+
+    window.onload = function () {
+        window.addEventListener('keydown', function (key) {
+            keyboardDown(key);
+        }, false);
+
+        window.addEventListener('keyup', function (key) {
+            keyboardUp(key);
+        }, false);
+    };
+
+    function playDrum(i) {
+        var source = context.createBufferSource();
+        source.buffer = buffers[i];
+        source.connect(gain_nodes[i]);
+        gain_nodes[i].connect(context.destination);
+        source.start(0);
+    }
+
+    var metronome;
+
+    function startMetronome(bpm) {
+        clearInterval(metronome);
+
+        metronome = setInterval(function () {
+            var hihatpad = document.getElementById("snarePad");
+            hihatpad.className = 'active';
+            simulateClick(hihatpad);
+            setTimeout(function () {
+                hihatpad.className = "";
+            }, 100)
+
+
+        }, 60000 / bpm);
+    }
+
+    function changeGain(i, changedValue) {
+        gain_nodes[i].gain.value = db2gain(changedValue);
+        document.getElementById(volume_label_id[i]).innerHTML = 'Volume:  ' + changedValue + 'dB';
+    }
+
+    function changeBPM(i, changedValue) {
+        startMetronome(changedValue);
+    }
+
+    function db2gain(db) {
+        return Math.pow(10, db / 20);
+    }
+
+
+    // keyboard mapping
+    function keyboardDown(key) {
+        switch (key.keyCode) {
+            case 65: //'a'
+                var kickpad = document.getElementById("kickPad");
+                kickpad.className = 'active';
+                simulateClick(kickpad);
+                break;
+            case 83: //'s'
+                var snarepad = document.getElementById("snarePad");
+                snarepad.className = 'active';
+                simulateClick(snarepad);
+                break;
+            case 76: //'l'
+                var hihatpad = document.getElementById("hihatPad");
+                hihatpad.className = 'active';
+                simulateClick(hihatpad);
+                break;
+        }
+    }
+
+    function keyboardUp(key) {
+        switch (key.keyCode) {
+            case 65: //'a'
+                var kickpad = document.getElementById("kickPad");
+                kickpad.className = '';
+                break;
+            case 83: //'s'
+                var snarepad = document.getElementById("snarePad");
+                snarepad.className = '';
+                break;
+            case 76: //'l'
+                var hihatpad = document.getElementById("hihatPad");
+                hihatpad.className = '';
+                break;
+        }
+    }
+
+    // simulated mousedown on buttons
+    function simulateClick(element) {
+        var event = new MouseEvent("mousedown", {
+            bubbles: true,
+            cancelable: true,
+            view: window
+        });
+        element.dispatchEvent(event);
+    }
+</script>
 </body>
+
 </html>
