@@ -82,9 +82,11 @@ function preload() {
     playImg = loadImage("asset/play.png");
     stopImg = loadImage("asset/stop.png");
     openImg = loadImage("asset/open.png");
-
-    alert("SEPARATE ROOM, SEPARATE MUSIC\nMAKE THEM DANCE ALTOGETHER TO THE MUSIC!!!\n[1st button: 'play', 2nd button: 'stop', 3rd button: 'open']");
 }
+
+$(document).ready(function () {
+    alert("SEPARATE ROOM, SEPARATE MUSIC\nMAKE THEM DANCE ALTOGETHER TO THE MUSIC!!!\n[1st button: 'play', 2nd button: 'stop', 3rd button: 'open']");
+});
 
 function setup() {
     createCanvas(totalW, totalH);
@@ -119,13 +121,6 @@ function draw() {
         rect(room.x, room.y, roomW, roomH);
         pop();
     }
-
-    // push();
-    // noFill();
-    // strokeWeight(10);
-    // rectMode(CENTER);
-    // rect(totalW / 2, totalH / 2, totalW * 0.95, totalH * 0.95);
-    // pop();
 }
 
 function setHumans() {
