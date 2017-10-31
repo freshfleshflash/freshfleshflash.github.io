@@ -84,10 +84,6 @@ function preload() {
     openImg = loadImage("asset/open.png");
 }
 
-$(document).ready(function () {
-    alert("SEPARATE ROOM, SEPARATE MUSIC\nMAKE THEM DANCE ALTOGETHER TO THE MUSIC!!!\n[1st button: 'play', 2nd button: 'stop', 3rd button: 'open']");
-});
-
 function setup() {
     createCanvas(totalW, totalH);
     smooth();
@@ -256,7 +252,8 @@ function setRooms() {
         rooms[i] = new Room(i, gapW + (gapW + roomW) * (i % sqrt(roomNum)), gapH + (gapH + roomH) * parseInt(i / sqrt(roomNum)));
     }
 
-    $('#title').css({'left': gapW, 'top': gapH - $('#title').height()});
+    $('#title').css({'top': gapH, 'left': (gapW - $('#title').width()) / 2, 'height': roomH});
+    $('#description').css({'width': roomW, 'left': gapW, 'top': gapH - $('#description').height() * 1.5});
 }
 
 function Room(id, x, y) {
