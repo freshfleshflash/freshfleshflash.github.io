@@ -278,8 +278,6 @@ function Room(id, x, y) {
         line(0, 0, roomW, 0);
         pop();
     };
-
-    // $('body').append('<div id="yell' + this.id + '" visibility="visible">TURN DOWN THE MUSIC!!!</div>');
 }
 
 var isPlayings = [false, false, false, false];
@@ -314,6 +312,7 @@ function Audio(id) {
         if (source) {
             isPlayings[id] = false;
             source.stop();
+            amp = 1;
         }
     });
 
