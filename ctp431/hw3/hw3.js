@@ -31,7 +31,7 @@ var reverb_params = {
 var synth = new Synth(context, synth_params);
 var delay = new Delay(context, delay_params);
 var reverb;
-loadReverb('IR.wav');
+loadReverb('hw3/IR.wav');
 synth.connect(delay);
 
 // launch MIDI 	
