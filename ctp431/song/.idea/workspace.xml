@@ -17,8 +17,8 @@
       <file leaf-file-name="index.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="293">
-              <caret line="29" column="6" lean-forward="true" selection-start-line="29" selection-start-column="6" selection-end-line="29" selection-end-column="6" />
+            <state relative-caret-position="426">
+              <caret line="60" column="52" lean-forward="false" selection-start-line="60" selection-start-column="52" selection-end-line="60" selection-end-column="52" />
               <folding />
             </state>
           </provider>
@@ -27,7 +27,7 @@
       <file leaf-file-name="app.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/app.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="887">
+            <state relative-caret-position="716">
               <caret line="137" column="284" lean-forward="false" selection-start-line="137" selection-start-column="284" selection-end-line="137" selection-end-column="284" />
               <folding />
             </state>
@@ -89,12 +89,12 @@
         <option value="$PROJECT_DIR$/js/duration.js" />
         <option value="$PROJECT_DIR$/js/size.js" />
         <option value="$PROJECT_DIR$/js/graphic.js" />
-        <option value="$PROJECT_DIR$/index.html" />
         <option value="$PROJECT_DIR$/js/spinner.js" />
         <option value="$PROJECT_DIR$/js/tweets.js" />
         <option value="$PROJECT_DIR$/css/style.css" />
         <option value="$PROJECT_DIR$/js/variable.js" />
         <option value="$PROJECT_DIR$/js/app.js" />
+        <option value="$PROJECT_DIR$/index.html" />
       </list>
     </option>
   </component>
@@ -131,6 +131,11 @@
             <path>
               <item name="song" type="b2602c69:ProjectViewProjectNode" />
               <item name="song" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="song" type="b2602c69:ProjectViewProjectNode" />
+              <item name="song" type="462c0819:PsiDirectoryNode" />
+              <item name="js" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -177,12 +182,12 @@
       <updated>1513435152927</updated>
       <workItem from="1513435154130" duration="12314000" />
       <workItem from="1513492412855" duration="49930000" />
-      <workItem from="1513546985954" duration="114000" />
+      <workItem from="1513546985954" duration="330000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="62358000" />
+    <option name="totallyTimeSpent" value="62574000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1672" y="-13" width="1696" height="1026" extended-state="6" />
@@ -380,7 +385,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/js/app.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="887">
+        <state relative-caret-position="716">
           <caret line="137" column="284" lean-forward="false" selection-start-line="137" selection-start-column="284" selection-end-line="137" selection-end-column="284" />
           <folding />
         </state>
@@ -388,8 +393,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="293">
-          <caret line="29" column="6" lean-forward="true" selection-start-line="29" selection-start-column="6" selection-end-line="29" selection-end-column="6" />
+        <state relative-caret-position="426">
+          <caret line="60" column="52" lean-forward="false" selection-start-line="60" selection-start-column="52" selection-end-line="60" selection-end-column="52" />
           <folding />
         </state>
       </provider>
