@@ -135,5 +135,5 @@ $('input[type=range]').on('input', function () {
 });
 
 $("#info").click(function() {
-    alert("[What]\n\nGrabs tweets containing keywords and turns them into sound,\nenabling an endless song\n\n\n[How]\n\nTop slider: tune controller\n\nBottom bar: scroller\n\nPlay button: auto play\n\nRew button: play slower\n\nFwd button: play faster");
+    alert("[What]\n\nGrabs tweets containing keywords and turns them into sound,\nenabling an endless song\n\n\n[How]\n\nTop slider: tune controller\n\nBottom bar: scroller\n\nPlay button: auto play\n\nRew button: play slower (keep clicking)\n\nFwd button: play faster (keep clicking)");
 });
