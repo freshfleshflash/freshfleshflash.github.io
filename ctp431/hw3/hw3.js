@@ -1,7 +1,5 @@
 var context = new AudioContext();
 var synth;
-
-
 var reverb;
 
 var synth_params = {
@@ -9,33 +7,31 @@ var synth_params = {
     lfoDepth: 10,
     filterCutoffFreq: 5000,
     filterQ: 1,
-    filterEnvAttackTime: 0.1,
+    filterEnvAttackTime: 0.2,
     filterEnvDecayTime: 0.2,
     filterEnvSustainLevel: 0.9,
     filterEnvReleaseTime: 0.1,
-    ampEnvAttackTime: 0.1,
+    ampEnvAttackTime: 0,
     ampEnvDecayTime: 0.2,
     ampEnvSustainLevel: 0.9,
     ampEnvReleaseTime: 0.1
 };
 
 var delay_params = {
-    delayTime: 0.3,
-    delayFeedbackGain: 0.2,
-    delayWetDry: 0.1
+    delayTime: 0.5,
+    delayFeedbackGain: 0.9,
+    delayWetDry: 0.8
 };
 
 var reverb_params = {
-    reverbWetDry: 1
+    reverbWetDry: 0.5
 };
 
 // default
 var synth = new Synth(context, synth_params);
 var delay = new Delay(context, delay_params);
 var reverb;
-// = new Reverb(context, reverb_params);
-loadReverb('IR2.wav');
-
+loadReverb('IR.wav');
 synth.connect(delay);
 
 // launch MIDI 	
@@ -43,7 +39,6 @@ if (navigator.requestMIDIAccess)
     navigator.requestMIDIAccess().then(onMIDIInit, onMIDIReject);
 else
     alert("No MIDI support present in your browser.  You're gonna have a bad time.")
-
 
 nx.onload = function () {
 

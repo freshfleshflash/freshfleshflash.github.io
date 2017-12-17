@@ -1,4 +1,3 @@
-
 var Reverb = function (context, parameters, buffer) {
 
     this.context = context;
@@ -11,7 +10,7 @@ var Reverb = function (context, parameters, buffer) {
     this.dryGain = context.createGain();
 
     // connect
-    delay.delayLine.connect(this.convolver);
+    delay.input.connect(this.convolver);
     this.convolver.connect(this.wetGain);
     this.input.connect(this.dryGain);
 
